@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StatusBar } from "react-native";
 import { BASE_URL } from "../config";
 import axios from "axios";
@@ -18,7 +18,6 @@ const LoginScreen = ({ navigation }) => {
   const [Password, setPassword] = useState("");
 
   const Login = async () => {
-    console.log("login: ", Email, Password);
     try {
       const response = await axios.post(`${BASE_URL}/login`, {
         email: Email,
@@ -26,12 +25,14 @@ const LoginScreen = ({ navigation }) => {
       });
 
       if (response) {
-        alert("Yay, you logged in 😊😊!!");
-        console.log("res: ", response);
-        navigation.navigate("Profile", {
-          token: response.data.token,
-        });
+        {
+          response.data.token &&
+            navigation.replace("Profile", {
+              token: response.data.token,
+            });
+        }
       } else {
+        alert("Login failed 😓😓");
         console.error("Error creating account:");
       }
     } catch (error) {

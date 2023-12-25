@@ -7,6 +7,7 @@ import { ProjectGalleryProvider } from "./context/GalleryContext.js";
 import SignupScreen from "./screens/SignupScreen";
 import LoginScreen from "./screens/LoginScreen.js";
 import ProfileScreen from "./screens/ProfileScreen.js";
+import Location from "./screens/location.js";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -32,6 +33,11 @@ export default function App() {
           <Stack.Screen
             name="Profile"
             component={ProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Location"
+            component={Location}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

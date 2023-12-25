@@ -1,14 +1,23 @@
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  Modal,
+  Pressable,
+  Alert,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
-import ProjectGalleryContext from "../context/GalleryContext";
 import { BASE_URL } from "../config";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import { Avatar } from "react-native-paper";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const [data, setData] = useState({});
+  const [modalVisible, setModalVisible] = useState(true);
   const route = useRoute();
   const token = route.params?.token;
   const getUserDetails = async () => {
@@ -20,7 +29,7 @@ const ProfileScreen = () => {
       });
 
       if (response) {
-        console.log("res: ", response);
+        // console.log("res: ", response);
         setData(response.data);
       } else {
         console.error("Error creating account:");
@@ -126,104 +135,160 @@ const ProfileScreen = () => {
           </View>
         </View>
       </View>
-      <ScrollView style={{ padding: 8 }}>
-        <Text style={{ fontWeight: "600", fontSize: 16 }}>
-          General Statistics
-        </Text>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 20,
-            borderColor: "#e4e4e4",
-            elevation: 12,
-            shadowColor: "#fff",
-            shadowOpacity: 0.8,
-            marginTop: "5%",
-          }}
-        >
-          <View style={{ display: "flex", flexDirection: "row" }}>
-            <Image source={require("../assets/images/check.png")} />
-            <Text style={{ marginLeft: "8%" }}>Places Visited</Text>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Location Persmision Required</Text>
+            <Text style={{}}>
+              You need to allow the app to fetch your location to use Loco,
+              otherwise you will be logged out!{" "}
+            </Text>
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 20,
+                marginTop: 10,
+              }}
+            >
+              <Pressable
+                style={{
+                  borderRadius: 20,
+                  padding: 10,
+                  paddingHorizontal: 20,
+                  elevation: 2,
+                  backgroundColor: "#dd8716",
+                }}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Allow Settings</Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  borderRadius: 20,
+                  padding: 10,
+                  paddingHorizontal: 20,
+                  elevation: 2,
+                  backgroundColor: "#ff2d55",
+                }}
+                onPress={() => navigation.replace("Home")}
+              >
+                <Text style={styles.textStyle}>Logout</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {!modalVisible && (
+        <ScrollView style={{ padding: 8 }}>
+          <Text style={{ fontWeight: "600", fontSize: 16 }}>
+            General Statistics
+          </Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderWidth: 1,
+              padding: 10,
+              borderRadius: 20,
+              borderColor: "#e4e4e4",
+              elevation: 12,
+              shadowColor: "#fff",
+              shadowOpacity: 0.8,
+              marginTop: "5%",
+            }}
+          >
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Image source={require("../assets/images/check.png")} />
+              <Text style={{ marginLeft: "8%" }}>Places Visited</Text>
+            </View>
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 26,
+                borderRadius: 20,
+                paddingVertical: 2,
+              }}
+            >
+              <Text>5</Text>
+            </View>
           </View>
           <View
             style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
               borderWidth: 1,
-              paddingHorizontal: 26,
+              padding: 10,
               borderRadius: 20,
-              paddingVertical: 2,
+              borderColor: "#e4e4e4",
+              elevation: 12,
+              shadowColor: "#fff",
+              shadowOpacity: 0.8,
+              marginTop: "5%",
             }}
           >
-            <Text>5</Text>
-          </View>
-        </View>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 20,
-            borderColor: "#e4e4e4",
-            elevation: 12,
-            shadowColor: "#fff",
-            shadowOpacity: 0.8,
-            marginTop: "5%",
-          }}
-        >
-          <View style={{ display: "flex", flexDirection: "row" }}>
-            <Image source={require("../assets/images/clock.png")} />
-            <Text style={{ marginLeft: "8%" }}>Hours Travelled</Text>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Image source={require("../assets/images/clock.png")} />
+              <Text style={{ marginLeft: "8%" }}>Hours Travelled</Text>
+            </View>
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 26,
+                borderRadius: 20,
+                paddingVertical: 2,
+              }}
+            >
+              <Text>18</Text>
+            </View>
           </View>
           <View
             style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
               borderWidth: 1,
-              paddingHorizontal: 26,
+              padding: 10,
               borderRadius: 20,
-              paddingVertical: 2,
+              borderColor: "#e4e4e4",
+              elevation: 12,
+              shadowColor: "#fff",
+              shadowOpacity: 0.8,
+              marginTop: "5%",
             }}
           >
-            <Text>18</Text>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Image source={require("../assets/images/award.png")} />
+              <Text style={{ marginLeft: "8%" }}>Surveys Completed</Text>
+            </View>
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 26,
+                borderRadius: 20,
+                paddingVertical: 2,
+              }}
+            >
+              <Text>9</Text>
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 20,
-            borderColor: "#e4e4e4",
-            elevation: 12,
-            shadowColor: "#fff",
-            shadowOpacity: 0.8,
-            marginTop: "5%",
-          }}
-        >
-          <View style={{ display: "flex", flexDirection: "row" }}>
-            <Image source={require("../assets/images/award.png")} />
-            <Text style={{ marginLeft: "8%" }}>Surveys Completed</Text>
-          </View>
-          <View
-            style={{
-              borderWidth: 1,
-              paddingHorizontal: 26,
-              borderRadius: 20,
-              paddingVertical: 2,
-            }}
-          >
-            <Text>9</Text>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
       <View
         style={{
           borderWidth: 1,
@@ -255,5 +320,47 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     backgroundColor: "#fff",
+  },
+  centeredView: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "50%",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    color: "#ff2d55",
   },
 });

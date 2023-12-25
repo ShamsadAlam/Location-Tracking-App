@@ -9,12 +9,10 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import { BASE_URL } from "../config";
-import ProjectGalleryContext from "../context/GalleryContext";
 
 const SignupScreen = ({ navigation }) => {
   const [Name, setName] = useState("");
@@ -22,7 +20,6 @@ const SignupScreen = ({ navigation }) => {
   const [Password, setPassword] = useState("");
   const [Age, setAge] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const { gallery, setGallery } = useContext(ProjectGalleryContext);
 
   const Signup = async () => {
     const formData = new FormData();
@@ -51,10 +48,10 @@ const SignupScreen = ({ navigation }) => {
 
       if (response.ok) {
         alert("Yay, Signed Up Done 😊😊!!");
-        setGallery((prevData) => [...prevData, formData]);
         navigation.navigate("Login");
       } else {
         const errorData = await response.json();
+        alert("Signup failed 😓😓");
         console.error("Error creating account:", errorData);
       }
     } catch (error) {

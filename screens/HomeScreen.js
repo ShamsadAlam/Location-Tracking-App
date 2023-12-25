@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useFonts } from "expo-font";
 import { StatusBar } from "react-native";
 
@@ -17,35 +17,6 @@ const HomeScreen = ({ navigation }) => {
   if (!fontsLoaded) {
     return null;
   }
-
-  // const requestLocationPermission = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //       {
-  //         title: "Cool Photo App Camera Permission",
-  //         message:
-  //           "Cool Photo App needs access to your camera " +
-  //           "so you can take awesome pictures.",
-  //         buttonNeutral: "Ask Me Later",
-  //         buttonNegative: "Cancel",
-  //         buttonPositive: "OK",
-  //       }
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       console.log("You can use the Location");
-  //     } else {
-  //       console.log("Location permission denied");
-  //     }
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   requestLocationPermission();
-  // }, []);
-
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Loco</Text>
