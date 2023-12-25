@@ -6,6 +6,7 @@ import {
   ScrollView,
   Modal,
   Pressable,
+  PermissionsAndroid,
   Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -18,6 +19,8 @@ import { Avatar } from "react-native-paper";
 const ProfileScreen = ({ navigation }) => {
   const [data, setData] = useState({});
   const [modalVisible, setModalVisible] = useState(true);
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
   const route = useRoute();
   const token = route.params?.token;
   const getUserDetails = async () => {
@@ -29,7 +32,6 @@ const ProfileScreen = ({ navigation }) => {
       });
 
       if (response) {
-        // console.log("res: ", response);
         setData(response.data);
       } else {
         console.error("Error creating account:");
@@ -38,9 +40,62 @@ const ProfileScreen = ({ navigation }) => {
       console.error("Error creating account:", error);
     }
   };
+
+  const getLocation = async () => {};
+
+  const requestLocationPermission = async () => {
+    try {
+      if (Platform.OS === "ios") {
+        const granted = await Geolocation.requestAuthorization("whenInUse");
+
+        if (granted === "granted") {
+          setLocationPermission(true);
+          setModalVisible(false);
+          getLocation();
+        } else {
+          Alert.alert(
+            "Location permission denied",
+            "You need to enable location permission to use this feature."
+          );
+        }
+      } else {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: "Location Permission",
+            message:
+              "Loco needs access to your location to provide accurate information.",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          }
+        );
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          setLocationPermission(true);
+          setModalVisible(false);
+          getLocation();
+        } else {
+          Alert.alert(
+            "Location permission denied",
+            "You need to enable location permission to use this feature."
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error requesting location permission:", error);
+    }
+  };
+
   useEffect(() => {
     getUserDetails();
   }, []);
+
+  useEffect(() => {
+    if (locationPermission) {
+      getLocation(); // Fetch location when permission is granted
+    }
+  }, [locationPermission]);
   return (
     <View style={styles.container}>
       <Text
@@ -93,7 +148,11 @@ const ProfileScreen = ({ navigation }) => {
           }}
         >
           <Image source={require("../assets/images/location.png")} />
-          <Text style={{ marginLeft: "1%" }}>New York City</Text>
+          <Text style={{ marginLeft: "1%" }}>
+            {locationPermission
+              ? `Latitude: 125.465886, Longitude: 465.16586`
+              : "Fetching location..."}
+          </Text>
         </View>
       </View>
       <View
@@ -146,10 +205,10 @@ const ProfileScreen = ({ navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Location Persmision Required</Text>
-            <Text style={{}}>
+            <Text style={styles.modalText}>Location Permission Required</Text>
+            <Text>
               You need to allow the app to fetch your location to use Loco,
-              otherwise you will be logged out!{" "}
+              otherwise you will be logged out!
             </Text>
             <View
               style={{
@@ -169,7 +228,7 @@ const ProfileScreen = ({ navigation }) => {
                   elevation: 2,
                   backgroundColor: "#dd8716",
                 }}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={requestLocationPermission}
               >
                 <Text style={styles.textStyle}>Allow Settings</Text>
               </Pressable>
@@ -222,7 +281,7 @@ const ProfileScreen = ({ navigation }) => {
                 paddingVertical: 2,
               }}
             >
-              <Text>5</Text>
+              <Text>4</Text>
             </View>
           </View>
           <View
@@ -253,7 +312,7 @@ const ProfileScreen = ({ navigation }) => {
                 paddingVertical: 2,
               }}
             >
-              <Text>18</Text>
+              <Text>11</Text>
             </View>
           </View>
           <View
@@ -284,7 +343,7 @@ const ProfileScreen = ({ navigation }) => {
                 paddingVertical: 2,
               }}
             >
-              <Text>9</Text>
+              <Text>2</Text>
             </View>
           </View>
         </ScrollView>
@@ -325,7 +384,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: "50%",
+    marginTop: "60%",
   },
   modalView: {
     margin: 20,
